@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎰 Lucky 7s Classic Slot Machine — WebGL Build</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Full Screen Background -->
+  <div class="bg-container">
+    <img src="assets/bg_gradient.png" alt="Casino Background" class="bg-image">
+    <div class="casino-lights"></div>
+  </div>
+
+  <!-- Screen Flash for Jackpot -->
+  <div id="screenFlash" class="screen-flash"></div>
+
+  <!-- Main Game Stage -->
+  <main class="game-wrapper" id="gameWrapper">
+    <!-- Top Header Badge -->
+    <header class="game-header">
+      <div class="title-badge">
+        <span class="sparkle">✨</span>
+        <h1 class="game-title">LUCKY 7s CLASSIC</h1>
+        <span class="sparkle">✨</span>
+      </div>
+      <div class="header-badges">
+        <div id="streakBadge" class="streak-badge hidden">
+          <span class="flame">🔥</span>
+          <span id="streakCount">0</span> STREAK
+        </div>
+        <div id="freeSpinBadge" class="free-spin-badge hidden">
+          <span class="star-icon">⭐</span>
+          <span id="freeSpinCount">0</span> FREE SPINS
+        </div>
+        <button id="paytableBtn" class="info-badge-btn" title="View Paytable & Rules">
+          <span>?</span> PAYTABLE
+        </button>
+        <button id="audioToggleBtn" class="info-badge-btn audio-btn" title="Toggle Sound">
+          <span id="soundIcon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Slot Machine Main Stage -->
+    <div class="machine-stage">
+      <!-- The Slot Machine Housing -->
+      <div class="machine-chassis">
+        <img src="assets/slot-machine1.png" alt="Slot Machine" class="chassis-bg" draggable="false">
+
+        <!-- Animated Lever Arm -->
+        <div id="leverContainer" class="lever-assembly" title="Pull Lever to Spin!">
+          <img id="leverArmUp" src="assets/slot-machine2.png" alt="Lever Up" class="lever-sprite arm-up" draggable="false">
+          <img id="leverArmDown" src="assets/slot-machine3.png" alt="Lever Down" class="lever-sprite arm-down hidden" draggable="false">
+          <div class="lever-hotspot" id="leverHotspot"></div>
+        </div>
+
+        <!-- Reel Window (Masked) -->
+        <div class="reel-window" id="reelWindow">
+          <div class="payline-guide"></div>
+
+          <!-- Reel 1 -->
+          <div class="reel-column" id="reel1">
+            <div class="reel-strip-viewport">
+              <div class="reel-slot top-slot" id="r1_top"></div>
+              <div class="reel-slot mid-slot" id="r1_mid"></div>
+              <div class="reel-slot bot-slot" id="r1_bot"></div>
+            </div>
+            <div class="reel-glow" id="r1_glow"></div>
+          </div>
+
+          <!-- Reel 2 -->
+          <div class="reel-column" id="reel2">
+            <div class="reel-strip-viewport">
+              <div class="reel-slot top-slot" id="r2_top"></div>
+              <div class="reel-slot mid-slot" id="r2_mid"></div>
+              <div class="reel-slot bot-slot" id="r2_bot"></div>
+            </div>
+            <div class="reel-glow" id="r2_glow"></div>
+          </div>
+
+          <!-- Reel 3 -->
+          <div class="reel-column" id="reel3">
+            <div class="reel-strip-viewport">
+              <div class="reel-slot top-slot" id="r3_top"></div>
+              <div class="reel-slot mid-slot" id="r3_mid"></div>
+              <div class="reel-slot bot-slot" id="r3_bot"></div>
+            </div>
+            <div class="reel-glow" id="r3_glow"></div>
+          </div>
+        </div>
+
+        <!-- Chassis Frame Overlay (Slot Window Border) -->
+        <img src="assets/slot-machine5.png" alt="Slot Bezel" class="chassis-overlay" draggable="false">
+
+        <!-- Win Banner on Machine -->
+        <div id="winBanner" class="win-banner hidden">
+          <div class="win-headline" id="winHeadline">JACKPOT!</div>
+          <div class="win-detail" id="winDetail">+500 CREDITS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls & HUD -->
+    <div class="bottom-console">
+      <!-- Metallic Box Display (Credits, Bet, Last Win) -->
+      <div class="hud-box">
+        <img src="assets/slot_machine_Middle_box.png" alt="Display Box" class="hud-box-bg" draggable="false">
+        <div class="hud-content">
+          <div class="hud-item credits-display">
+            <div class="hud-label">CREDITS</div>
+            <div class="hud-value neon-gold" id="creditsDisplay">1,000</div>
+          </div>
+          <div class="hud-item win-display">
+            <div class="hud-label">LAST WIN</div>
+            <div class="hud-value neon-cyan" id="lastWinDisplay">0</div>
+          </div>
+          <div class="hud-item bet-display">
+            <div class="hud-label">TOTAL BET</div>
+            <div class="hud-value neon-amber" id="betDisplay">10</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button Controls -->
+      <div class="controls-row">
+        <!-- Decrease Bet -->
+        <button id="betMinusBtn" class="btn-sprite-btn bet-btn minus-btn" title="Decrease Bet (Arrow Left)">
+          <span class="btn-icon">◀</span>
+          <span class="btn-text">BET -</span>
+        </button>
+
+        <!-- Quick Bet Presets -->
+        <div class="bet-presets">
+          <button class="preset-pill active" data-bet="10">10</button>
+          <button class="preset-pill" data-bet="20">20</button>
+          <button class="preset-pill" data-bet="50">50</button>
+          <button class="preset-pill" data-bet="100">100</button>
+        </div>
+
+        <!-- Increase Bet -->
+        <button id="betPlusBtn" class="btn-sprite-btn bet-btn plus-btn" title="Increase Bet (Arrow Right)">
+          <span class="btn-text">BET +</span>
+          <span class="btn-icon">▶</span>
+        </button>
+
+        <!-- Auto Spin Toggle -->
+        <button id="autoSpinBtn" class="btn-sprite-btn auto-btn" title="Toggle Auto-Spin Mode">
+          <span class="auto-icon">🔄</span>
+          <span class="btn-text" id="autoBtnText">AUTO</span>
+        </button>
+
+        <!-- Main SPIN Button -->
+        <button id="spinBtn" class="spin-button" title="Spin the Reels! [Spacebar]">
+          <span class="spin-label">SPIN</span>
+          <span class="spin-sub">OR PULL LEVER</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Slide-In Paytable Panel -->
+  <aside id="paytablePanel" class="paytable-drawer hidden">
+    <div class="drawer-header">
+      <h2>🏆 PAYOUT TABLE & RULES</h2>
+      <button id="closePaytableBtn" class="drawer-close-btn">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="rule-box">
+        <h3>🎯 HOW TO WIN</h3>
+        <p>Match 3 identical symbols across the center payline to win big! Any 2 matching symbols refund your full bet.</p>
+      </div>
+
+      <div class="paytable-grid">
+        <!-- Seven -->
+        <div class="pay-row jackpot-row">
+          <div class="pay-icons">
+            <img src="assets/slot-symbol1.png" alt="Seven">
+            <img src="assets/slot-symbol1.png" alt="Seven">
+            <img src="assets/slot-symbol1.png" alt="Seven">
+          </div>
+          <div class="pay-info">
+            <div class="pay-title">🎰 LUCKY SEVEN (JACKPOT)</div>
+            <div class="pay-mult">10× BET</div>
+          </div>
+        </div>
+
+        <!-- Bar -->
+        <div class="pay-row">
+          <div class="pay-icons">
+            <img src="assets/slot-symbol4.png" alt="Bar">
+            <img src="assets/slot-symbol4.png" alt="Bar">
+            <img src="assets/slot-symbol4.png" alt="Bar">
+          </div>
+          <div class="pay-info">
+            <div class="pay-title">BAR TRIPLE</div>
+            <div class="pay-mult">5× BET</div>
+          </div>
+        </div>
+
+        <!-- Bell -->
+        <div class="pay-row">
+          <div class="pay-icons">
+            <img src="assets/slot-symbol3.png" alt="Bell">
+            <img src="assets/slot-symbol3.png" alt="Bell">
+            <img src="assets/slot-symbol3.png" alt="Bell">
+          </div>
+          <div class="pay-info">
+            <div class="pay-title">GOLDEN BELL</div>
+            <div class="pay-mult">3× BET</div>
+          </div>
+        </div>
+
+        <!-- Cherry -->
+        <div class="pay-row">
+          <div class="pay-icons">
+            <img src="assets/slot-symbol2.png" alt="Cherry">
+            <img src="assets/slot-symbol2.png" alt="Cherry">
+            <img src="assets/slot-symbol2.png" alt="Cherry">
+          </div>
+          <div class="pay-info">
+            <div class="pay-title">TWIN CHERRIES</div>
+            <div class="pay-mult">2× BET</div>
+          </div>
+        </div>
+
+        <!-- Wild -->
+        <div class="pay-row bonus-row">
+          <div class="pay-icons">
+            <div class="wild-icon-mock">⭐</div>
+            <div class="wild-icon-mock">⭐</div>
+          </div>
+          <div class="pay-info">
+            <div class="pay-title">⭐ 2× WILD JOKER</div>
+            <div class="pay-mult">+1 FREE SPIN</div>
+          </div>
+        </div>
+
+        <!-- Any 2 -->
+        <div class="pay-row">
+          <div class="pay-icons text-icons">ANY 2 MATCH</div>
+          <div class="pay-info">
+            <div class="pay-title">PAIR RETURN</div>
+            <div class="pay-mult">1× BET BACK</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-box weights-box">
+        <h3>⚖️ FAIR SEEDED RNG PROBABILITIES</h3>
+        <ul>
+          <li><strong>Cherry:</strong> 35% spawn weight</li>
+          <li><strong>Bell:</strong> 30% spawn weight</li>
+          <li><strong>Bar:</strong> 20% spawn weight</li>
+          <li><strong>Seven:</strong> 10% spawn weight (Rare)</li>
+          <li><strong>Wild:</strong> 5% spawn weight (Ultra Rare)</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Interactive Modal Popup (Double or Collect / Big Win) -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="popup-box">
+      <img src="assets/popup.png" alt="Popup Frame" class="popup-frame-bg" draggable="false">
+      <div class="popup-inner">
+        <h2 id="popupHeadline" class="popup-title">CONGRATULATIONS!</h2>
+        <p id="popupBody" class="popup-msg">You hit 3 Lucky 7s and won 500 Credits!</p>
+        
+        <div class="popup-buttons">
+          <!-- Left half: YES/COLLECT -->
+          <button id="popupYesBtn" class="popup-btn yes-btn" title="Collect Win & Continue">
+            <span>COLLECT</span>
+          </button>
+          <!-- Right half: NO/DOUBLE -->
+          <button id="popupNoBtn" class="popup-btn no-btn" title="Double or Nothing!">
+            <span>SPIN AGAIN</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas for Jackpot -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <script src="game.js"></script>
+</body>
+</html>
