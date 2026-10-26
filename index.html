@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Full Screen Background -->
+  <!-- Full Screen Casino Background -->
   <div class="bg-container">
     <img src="assets/bg_gradient.png" alt="Casino Background" class="bg-image">
     <div class="casino-lights"></div>
@@ -48,56 +48,50 @@
 
     <!-- Slot Machine Main Stage -->
     <div class="machine-stage">
-      <!-- The Slot Machine Housing -->
       <div class="machine-chassis">
-        <img src="assets/slot-machine1.png" alt="Slot Machine" class="chassis-bg" draggable="false">
+        <!-- Layer 1: Reel Background Drums -->
+        <img src="assets/slot-machine5.png" alt="Slot Reel Drums" class="chassis-layer chassis-drum-bg" draggable="false">
 
-        <!-- Animated Lever Arm -->
+        <!-- Layer 2: Reels with Symbols -->
+        <div class="reel-window" id="reelWindow">
+          <div class="payline-guide"></div>
+
+          <!-- Reel 1 -->
+          <div class="reel-column" id="reel1">
+            <div class="reel-slot" id="r1_top"></div>
+            <div class="reel-slot payline-slot" id="r1_mid"></div>
+            <div class="reel-slot" id="r1_bot"></div>
+            <div class="reel-glow" id="r1_glow"></div>
+          </div>
+
+          <!-- Reel 2 -->
+          <div class="reel-column" id="reel2">
+            <div class="reel-slot" id="r2_top"></div>
+            <div class="reel-slot payline-slot" id="r2_mid"></div>
+            <div class="reel-slot" id="r2_bot"></div>
+            <div class="reel-glow" id="r2_glow"></div>
+          </div>
+
+          <!-- Reel 3 -->
+          <div class="reel-column" id="reel3">
+            <div class="reel-slot" id="r3_top"></div>
+            <div class="reel-slot payline-slot" id="r3_mid"></div>
+            <div class="reel-slot" id="r3_bot"></div>
+            <div class="reel-glow" id="r3_glow"></div>
+          </div>
+        </div>
+
+        <!-- Layer 3: Machine Front Housing with Cutouts -->
+        <img src="assets/slot-machine4.png" alt="Slot Machine Front" class="chassis-layer chassis-front" draggable="false">
+
+        <!-- Layer 4: Interactive Animated Lever Arm -->
         <div id="leverContainer" class="lever-assembly" title="Pull Lever to Spin!">
           <img id="leverArmUp" src="assets/slot-machine2.png" alt="Lever Up" class="lever-sprite arm-up" draggable="false">
           <img id="leverArmDown" src="assets/slot-machine3.png" alt="Lever Down" class="lever-sprite arm-down hidden" draggable="false">
           <div class="lever-hotspot" id="leverHotspot"></div>
         </div>
 
-        <!-- Reel Window (Masked) -->
-        <div class="reel-window" id="reelWindow">
-          <div class="payline-guide"></div>
-
-          <!-- Reel 1 -->
-          <div class="reel-column" id="reel1">
-            <div class="reel-strip-viewport">
-              <div class="reel-slot top-slot" id="r1_top"></div>
-              <div class="reel-slot mid-slot" id="r1_mid"></div>
-              <div class="reel-slot bot-slot" id="r1_bot"></div>
-            </div>
-            <div class="reel-glow" id="r1_glow"></div>
-          </div>
-
-          <!-- Reel 2 -->
-          <div class="reel-column" id="reel2">
-            <div class="reel-strip-viewport">
-              <div class="reel-slot top-slot" id="r2_top"></div>
-              <div class="reel-slot mid-slot" id="r2_mid"></div>
-              <div class="reel-slot bot-slot" id="r2_bot"></div>
-            </div>
-            <div class="reel-glow" id="r2_glow"></div>
-          </div>
-
-          <!-- Reel 3 -->
-          <div class="reel-column" id="reel3">
-            <div class="reel-strip-viewport">
-              <div class="reel-slot top-slot" id="r3_top"></div>
-              <div class="reel-slot mid-slot" id="r3_mid"></div>
-              <div class="reel-slot bot-slot" id="r3_bot"></div>
-            </div>
-            <div class="reel-glow" id="r3_glow"></div>
-          </div>
-        </div>
-
-        <!-- Chassis Frame Overlay (Slot Window Border) -->
-        <img src="assets/slot-machine5.png" alt="Slot Bezel" class="chassis-overlay" draggable="false">
-
-        <!-- Win Banner on Machine -->
+        <!-- Layer 5: Win Banner on Machine -->
         <div id="winBanner" class="win-banner hidden">
           <div class="win-headline" id="winHeadline">JACKPOT!</div>
           <div class="win-detail" id="winDetail">+500 CREDITS</div>
