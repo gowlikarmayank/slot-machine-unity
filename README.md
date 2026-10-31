@@ -32,6 +32,12 @@ A classic 3-reel, single-payline slot machine where the player bets credits and 
 
 ## 🚀 How to Run the WebGL Build
 
+### 🌐 Play Live Online
+👉 **[https://gowlikarmayank.github.io/slot-machine-unity/](https://gowlikarmayank.github.io/slot-machine-unity/)**
+
+---
+
+### 💻 Run Locally
 1. Download or clone this repository.
 2. Navigate to `Build/WebGL/`.
 3. Open `index.html` in a modern browser (**Chrome** or **Firefox** recommended).
